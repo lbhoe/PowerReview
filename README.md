@@ -1,6 +1,6 @@
 # PowerReview
 PowerReview is a PowerShell implementation of baseline log review on extracted Windows Event Logs.
-
+```
 Usage:
   PowerReview.ps1 -sd <StartDate> -ed <EndDate>
 
@@ -13,3 +13,4 @@ Options:
 
 Note:
   The output of this script is based on the timezone of the computer it ran on.
+```
