@@ -4,19 +4,22 @@ param(
 )
 
 function Show-Usage {
-    Write-Host "Usage:"
-    Write-Host "  PowerReview.ps1 -sd <StartDate> -ed <EndDate>"
-    Write-Host ""
-    Write-Host "Description:"
-    Write-Host "  PowerReview is a PowerShell implementation of baseline log review on extracted Windows Event Logs."
-    Write-Host ""
-    Write-Host "Options:"
-    Write-Host "  -sd    The start date in format YYYY-MM-DD."
-    Write-Host "  -ed    The end date in format YYYY-MM-DD."
-    Write-Host ""
-    Write-Host "Note:"
-    Write-Host "  The output of this script is based on the timezone of the computer it ran on."
-    Write-Host ""
+    $usage = @"
+Usage:
+  PowerReview.ps1 -sd <StartDate> -ed <EndDate>
+
+Description:
+  PowerReview is a PowerShell implementation of baseline log review on extracted Windows Event Logs.
+
+Options:
+  -sd    The start date in format YYYY-MM-DD.
+  -ed    The end date in format YYYY-MM-DD.
+
+Note:
+  The output of this script is based on the timezone of the computer it ran on.
+
+"@
+    Write-Host $usage
 }
 
 if (-not $sd -or -not $ed) {
@@ -47,25 +50,28 @@ $results = @()
 # Recursively search for all .evtx files
 $evtxFiles = Get-ChildItem -Path $scriptPath -Recurse -Filter *.evtx
 
-Write-Host ""
-Write-Output ">>>>>> Starting PowerReview version 1.0.0 ..."
-Write-Host ""
+$startMessage = @"
+
+>>>>>> Starting PowerReview version 1.0.0 ...
+ 
+"@
+Write-Host $startMessage
 
 foreach ($file in $evtxFiles) {
-    Write-Output "Parsing $($file.FullName)"
+    Write-Host "Parsing $($file.FullName)"
     
     Try {
         # Get the events from the log file with FilterHashtable including time range
         $events = Get-WinEvent -FilterHashtable @{
-            Path = $file.FullName
-            Id = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
+            Path      = $file.FullName
+            Id        = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
             StartTime = $startDate
-            EndTime = $endDate
+            EndTime   = $endDate
         } -ErrorAction Stop
         
         # Count the number of events
         $eventCount = $events.Count
-        Write-Output "Number of events identified: $eventCount"
+        Write-Host "Number of events identified: $eventCount"
         
         # Process each event and add it to the results array
         foreach ($event in $events) {
@@ -81,7 +87,7 @@ foreach ($file in $evtxFiles) {
         }
     }
     Catch [System.Exception] {
-        Write-Output "Number of events identified: 0"
+        Write-Host "Number of events identified: 0"
     }
 }
 
@@ -107,13 +113,16 @@ $outputFilePath = Join-Path -Path $scriptPath -ChildPath $outputFileName
 # Save the deduplicated results to a CSV file
 $sortedResults | Export-Csv -Path $outputFilePath -NoTypeInformation
 
-Write-Host ""
-Write-Host "Summary:"
-Write-Output "  Total number of events identified: $totalEventsIdentified"
-Write-Output "  Total number of duplicate events removed: $duplicateEventsRemoved"
-Write-Output "  Total number of events written to CSV: $totalEventsAfterDeduplication"
-Write-Host ""
-Write-Output "  Results saved to $outputFilePath"
-Write-Host ""
-Write-Output ">>>>>> PowerReview completed."
-Write-Host ""
+$endMessage = @"
+
+Summary:
+  Total number of events identified: $totalEventsIdentified
+  Total number of duplicate events removed: $duplicateEventsRemoved
+  Total number of events written to CSV: $totalEventsAfterDeduplication
+
+  Results saved to $outputFilePath
+
+>>>>>> PowerReview completed.
+
+"@
+Write-Host $endMessage
