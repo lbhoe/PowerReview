@@ -52,7 +52,7 @@ $evtxFiles = Get-ChildItem -Path $scriptPath -Recurse -Filter *.evtx
 
 $startMessage = @"
 
->>>>>> Starting PowerReview version 1.0.0 ...
+>>>>>> Starting PowerReview version 1.0.3 ...
  
 "@
 Write-Host $startMessage
