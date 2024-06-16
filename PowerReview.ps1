@@ -55,8 +55,13 @@ foreach ($file in $evtxFiles) {
     Write-Output "Parsing $($file.FullName)"
     
     Try {
-        # Get the events from the log file
-        $events = Get-WinEvent -FilterHashtable @{Path = $file.FullName; Id = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720 } -ErrorAction Stop
+        # Get the events from the log file with FilterHashtable including time range
+        $events = Get-WinEvent -FilterHashtable @{
+            Path = $file.FullName
+            Id = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
+            StartTime = $startDate
+            EndTime = $endDate
+        } -ErrorAction Stop
         
         # Count the number of events
         $eventCount = $events.Count
