@@ -52,7 +52,7 @@ $evtxFiles = Get-ChildItem -Path $scriptPath -Recurse -Filter *.evtx
 
 $startMessage = @"
 
->>>>>> Starting PowerReview version 1.0.3 ...
+>>>>>> Starting PowerReview version 1.0.4 ...
  
 "@
 Write-Host $startMessage
@@ -73,18 +73,7 @@ foreach ($file in $evtxFiles) {
         $eventCount = $events.Count
         Write-Host "Number of events identified: $eventCount"
         
-        # Process each event and add it to the results array
-        foreach ($event in $events) {
-            $results += [PSCustomObject]@{
-                TimeCreated = $event.TimeCreated
-                Id          = $event.Id
-                Message     = $event.Message
-                MachineName = $event.MachineName
-                UserId      = $event.UserId
-                # Uncomment ContainerLog if evtx source is required
-                # ContainerLog  = $event.ContainerLog
-            }
-        }
+        $results += $events
     }
     Catch [System.Exception] {
         Write-Host "Number of events identified: 0"
