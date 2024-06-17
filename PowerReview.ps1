@@ -52,7 +52,7 @@ $evtxFiles = Get-ChildItem -Path $scriptPath -Recurse -Filter *.evtx
 
 $startMessage = @"
 
->>>>>> Starting PowerReview version 1.0.4 ...
+>>>>>> Starting PowerReview version 1.0.5 ...
  
 "@
 Write-Host $startMessage
@@ -69,11 +69,18 @@ foreach ($file in $evtxFiles) {
             EndTime   = $endDate
         } -ErrorAction Stop
         
-        # Count the number of events
-        $eventCount = $events.Count
+        # Filter events to include only those with LogName "Security", "Application", or "System"
+        $filteredEvents = $events | Where-Object { 
+            $_.LogName -eq 'Security' -or 
+            $_.LogName -eq 'Application' -or 
+            $_.LogName -eq 'System' 
+        }
+
+        # Count the number of filtered events
+        $eventCount = $filteredEvents.Count
         Write-Host "Number of events identified: $eventCount"
         
-        $results += $events
+        $results += $filteredEvents
     }
     Catch [System.Exception] {
         Write-Host "Number of events identified: 0"
