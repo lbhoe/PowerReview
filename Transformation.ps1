@@ -92,7 +92,16 @@ foreach ($csvFile in $csvFiles) {
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $user_added = $_.'Commands/Events' -match $added_pattern
-                    $_.User_Added = $matches[1]
+                    if ($user_added -eq "True"){
+                        if ($matches[1].Contains(",")){
+                            $string = $matches[1]
+                            $common_name = '(CN|cn)=([^,]+)'
+                            $grab_common_name = $string -match $common_name
+                            $_.User_Added = $matches[2]
+                        }else {
+                            $_.User_Added = $matches[1]
+                        }
+                    }
                     $group = $_.'Commands/Events' -match $group_pattern
                     $_.Domain_Group = $matches[2] + '\' + $matches[1]
                     $_.'Commands/Events' = "A member was added to a security-enabled global group"
@@ -109,7 +118,16 @@ foreach ($csvFile in $csvFiles) {
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $user_added = $_.'Commands/Events' -match $added_pattern
-                    $_.User_Added = $matches[1]
+                    if ($user_added -eq "True"){
+                        if ($matches[1].Contains(",")){
+                            $string = $matches[1]
+                            $common_name = '(CN|cn)=([^,]+)'
+                            $grab_common_name = $string -match $common_name
+                            $_.User_Added = $matches[2]
+                        }else {
+                            $_.User_Added = $matches[1]
+                        }
+                    }
                     $group = $_.'Commands/Events' -match $group_pattern
                     $_.Local_Account = $matches[2] + '\' + $matches[1]
                     $_.Group_Name = $matches[1]
