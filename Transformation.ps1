@@ -55,7 +55,7 @@ foreach ($csvFile in $csvFiles) {
             switch ($_){
                 {$_.EventCode -eq 1102}{
                     # Write-Host $_.EventCode
-                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\s]+)'
+                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                     $users = $_.'Commands/Events' -match $users_pattern
                     if ($users -eq "True"){
                         $_.Users = $matches[1]
@@ -64,15 +64,15 @@ foreach ($csvFile in $csvFiles) {
                 } 
                 
                 {$_.EventCode -eq 4719}{
-                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\s]+)'
+                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $_.'Commands/Events' = "System audit policy was changed"
                 } 
                 
                 {$_.EventCode -eq 4720}{
-                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\s]+)'
-                    $added_pattern = 'New Account:\s+.*\s+Account Name:\s+([^\s]+)'
+                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
+                    $added_pattern = 'New Account:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $user_added = $_.'Commands/Events' -match $added_pattern
@@ -86,9 +86,9 @@ foreach ($csvFile in $csvFiles) {
                 }
                 
                 {$_.EventCode -eq 4728}{
-                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\s]+)'
-                    $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\s]+)'
-                    $group_pattern = 'Group:\s+.*\s+Group Name:\s+([^\s]+)\s+Group Domain:\s+([^\s]+)'
+                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
+                    $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
+                    $group_pattern = 'Group:\s+.*\s+Group Name:\s+([^\n]+)\s+Group Domain:\s+([^\n\t\r]+)'
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $user_added = $_.'Commands/Events' -match $added_pattern
@@ -112,9 +112,9 @@ foreach ($csvFile in $csvFiles) {
                 }
                 
                 {$_.EventCode -eq 4732}{
-                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\s]+)'
-                    $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\s]+)'
-                    $group_pattern = 'Group:\s+.*\s+Group Name:\s+([^\s]+)\s+Group Domain:\s+([^\s]+)'
+                    $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
+                    $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
+                    $group_pattern = 'Group:\s+.*\s+Group Name:\s+([^\n]+)\s+Group Domain:\s+([^\n\t\r]+)'
                     $users = $_.'Commands/Events' -match $users_pattern
                     $_.Users = $matches[1]
                     $user_added = $_.'Commands/Events' -match $added_pattern
