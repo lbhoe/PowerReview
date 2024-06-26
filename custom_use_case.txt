@@ -24,9 +24,9 @@ foreach ($file in $evtxFiles) {
         } -ErrorAction Stop
 
         $filteredEvents = $events | Where-Object {
-            $_.LogName -eq 'Security' -or 
-            $_.LogName -eq 'Application' -or 
-            $_.LogName -eq 'System' 
+            $_.LogName -eq 'Security' -or
+            $_.LogName -eq 'Application' -or
+            $_.LogName -eq 'System'
         }
 
         $results += $filteredEvents
@@ -83,15 +83,15 @@ $data | ForEach-Object {
                     $_.Users = $matches[1]
                 }
                 $_.'Commands/Events' = "The audit log was cleared"
-            } 
-            
+            }
+
             { $_.EventCode -eq 4719 } {
                 $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                 $users = $_.'Commands/Events' -match $users_pattern
                 $_.Users = $matches[1]
                 $_.'Commands/Events' = "System audit policy was changed"
-            } 
-            
+            }
+
             { $_.EventCode -eq 4720 } {
                 $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                 $added_pattern = 'New Account:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
@@ -101,7 +101,7 @@ $data | ForEach-Object {
                 $_.User_Added = $matches[1]
                 $_.'Commands/Events' = "A user account was created"
             }
-            
+
             { $_.EventCode -eq 4728 } {
                 $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                 $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
@@ -124,7 +124,7 @@ $data | ForEach-Object {
                 $_.Domain_Group = $matches[2] + '\' + $matches[1]
                 $_.'Commands/Events' = "A member was added to a security-enabled global group"
             }
-            
+
             { $_.EventCode -eq 4732 } {
                 $users_pattern = 'Subject:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
                 $added_pattern = 'Member:\s+.*\s+Account Name:\s+([^\n\t\r]+)'
