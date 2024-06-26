@@ -1,5 +1,4 @@
-# 1st command: $script = Get-Content -Path 'C:\Users\admin\Desktop\PowerReview\custom_use_case.txt' -Raw
-# 2nd command: Invoke-Expression $script
+# command: Invoke-Expression (Get-Content -Path 'C:\Users\admin\Desktop\PowerReview\custom_use_case.txt' -Raw)
 
 $scriptPath = 'C:\Users\admin\Desktop\PowerReview' # amend to the path containing the evtx files
 $startDate = '2000-01-01' # amend accordingly
