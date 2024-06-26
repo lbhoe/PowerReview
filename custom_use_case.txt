@@ -7,8 +7,14 @@ $endDate = '2024-06-26' # amend accordingly
 
 $evtxFiles = Get-ChildItem -Path $scriptPath -Recurse -Filter *.evtx
 $results = @()
+$totalFiles = $evtxFiles.Count
+$currentFileIndex = 0
 
-foreach ($file in $evtxFiles) {   
+foreach ($file in $evtxFiles) {
+    $currentFileIndex++
+    $percentComplete = [math]::Round(($currentFileIndex / $totalFiles) * 100)
+    Write-Progress -Activity "Processing EVTX files" -Status "Processing file $currentFileIndex of $totalFiles" -PercentComplete $percentComplete
+
     try {
         $events = Get-WinEvent -FilterHashtable @{
             Path      = $file.FullName
@@ -17,7 +23,7 @@ foreach ($file in $evtxFiles) {
             EndTime   = $endDate
         } -ErrorAction Stop
 
-        $filteredEvents = $events | Where-Object { 
+        $filteredEvents = $events | Where-Object {
             $_.LogName -eq 'Security' -or 
             $_.LogName -eq 'Application' -or 
             $_.LogName -eq 'System' 
@@ -152,3 +158,5 @@ $data | ForEach-Object {
 $outputFileName = "ABLR_PowerReview_s$($startDate)_e$($endDate).csv"
 $outputFilePath = Join-Path -Path $scriptPath -ChildPath $outputFileName
 $data | Export-Csv -Path $outputFilePath -NoTypeInformation
+Write-Host "Results saved to $outputFilePath"
+Write-Host ""
