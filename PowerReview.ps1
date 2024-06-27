@@ -77,7 +77,7 @@ function Parse-Evtx {
             # Get the events from the log file with FilterHashtable including time range
             $events = Get-WinEvent -FilterHashtable @{
                 Path      = $file.FullName
-                Id        = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720, 4624
+                Id        = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
                 StartTime = $startDate
                 EndTime   = $endDate
             } -ErrorAction Stop
