@@ -2,7 +2,7 @@
 PowerReview is a PowerShell implementation of baseline log review on extracted Windows Event Logs.
 ```
 Usage:
-  PowerReview.ps1 -sd <StartDate> -ed <EndDate> -ep <Base Directory>
+  PowerReview.ps1 -sd <StartDate> -ed <EndDate> -ep <Base Directory> -ev <EventIDs>
 
 Description:
   PowerReview is a PowerShell implementation of baseline log review on extracted Windows Event Logs.
