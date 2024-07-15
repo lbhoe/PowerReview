@@ -1,7 +1,8 @@
 param(
     [string]$sd,
     [string]$ed,
-    [string]$ep
+    [string]$ep,
+    [int[]]$ev
 )
 
 function Show-Usage {
@@ -16,6 +17,7 @@ Options:
   -sd    The start date in format YYYY-MM-DD.
   -ed    The end date in format YYYY-MM-DD.
   -ep    The base directory containing the evtx files
+  -ev    Event IDs to parse (Default: 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720)
 
 Note:
   The output of this script is based on the timezone of the computer it ran on.
@@ -24,7 +26,7 @@ Note:
     Write-Host $usage
 }
 
-function Error-Catch {
+function Test-Error {
     if (-not $sd -or -not $ed) {
         Show-Usage
         exit
@@ -52,7 +54,7 @@ function Error-Catch {
 	}
 }
 
-function Parse-Evtx {
+function Invoke-Review {
 
     $startDate = [datetime]::ParseExact($sd, 'yyyy-MM-dd', $null)
     $endDate = [datetime]::ParseExact($ed, 'yyyy-MM-dd', $null)
@@ -73,15 +75,24 @@ function Parse-Evtx {
     foreach ($file in $evtxFiles) {
         Write-Host "Parsing $($file.FullName)"
         
-        Try {
-            # Get the events from the log file with FilterHashtable including time range
-            $events = Get-WinEvent -FilterHashtable @{
-                Path      = $file.FullName
-                Id        = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
-                StartTime = $startDate
-                EndTime   = $endDate
-            } -ErrorAction Stop
-            
+        try {
+            if ([string]::IsNullOrEmpty($ev)) {
+                # Get the events from the log file with FilterHashtable including time range
+                $events = Get-WinEvent -FilterHashtable @{
+                    Path      = $file.FullName
+                    Id        = 1102, 4728, 11707, 11724, 4732, 4719, 20001, 4720
+                    StartTime = $startDate
+                    EndTime   = $endDate
+                } -ErrorAction Stop
+            } else{
+                # Get the events from the log file with FilterHashtable including time range
+                $events = Get-WinEvent -FilterHashtable @{
+                    Path      = $file.FullName
+                    Id        = $ev
+                    StartTime = $startDate
+                    EndTime   = $endDate
+                } -ErrorAction Stop
+            }
             # Filter events to include only those with LogName "Security", "Application", or "System"
             $filteredEvents = $events | Where-Object { 
                 $_.LogName -eq 'Security' -or 
@@ -137,5 +148,5 @@ function Parse-Evtx {
     Write-Host $endMessage
 }
 
-Error-Catch
-Parse-Evtx
+Test-Error
+Invoke-Review
